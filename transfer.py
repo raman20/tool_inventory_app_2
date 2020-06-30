@@ -16,16 +16,19 @@ def tool_transfer():
     city = city.lower()
     tool_id = int(input('select tool id: '))
     quantity = int(input('enter quantity')) 
-    cur.execute(f'select * from main where id = {tool_id}')
-    tool_info = cur.fetchall()
-    avl_quant = tool_info[0][-1]
-    sr_num = tool_info[0][-2]
-    sr_num = sr_num.split('_')
-    sr_num = sr_num[0]+'_'+str((avl_quant-quantity)+1)
+    cur.execute('select * from main where id = ?',(tool_id,))
+    tool_info = cur.fetchone()
+    avl_quant = tool_info[-1]
+    tool_name = tool_info[-3]
+    sr = tool_info[-2]
+    sr = sr.split('_')
+    sr = sr[0]+'_'+str((avl_quant-quantity)+1)
     if quantity <= avl_quant:
-        cur.execute(f'update main set quantity = {avl_quant-quantity}')
-        cur.execute(f'insert into {city}(sr_num,quantity) values({sr_num},quantity)')
-        cur.execute(f'select * from {city}')
+        cur.execute(f'update main set quantity = {avl_quant-quantity} where id = {tool_id}')
+        cur.execute('insert into {0}(tool,sr_num,quantity) values("{1}","{2}",{3})'.format(city,tool_name,sr,quantity))
+        cur.execute('select * from {0}'.format(city))
         print(cur.fetchall())
+    con.commit()
+    con.close()
         
 tool_transfer()
