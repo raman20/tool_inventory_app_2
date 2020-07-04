@@ -22,7 +22,7 @@ def transfer():
         main.update_one({"_id":str(tool_id)},{"$set":{"quant":str(int(avl_quant)-quantity)}})
     else:
         print("insufficient quantity")
-        break
+        return
 
     for i in new_col.find():
         print(i)
