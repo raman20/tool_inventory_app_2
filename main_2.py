@@ -19,8 +19,11 @@ def transfer():
     if quantity<=int(avl_quant):
         id = new_col.count()+1
         new_col.insert_one({"_id":str(id),'name':tool_name,'sr_num':sr_num,"quant":quantity})
-        main.update({"_id":str(tool_id)},{"quant":str(int(avl_quant)-quantity)})
-    
+        main.update_one({"_id":str(tool_id)},{"$set":{"quant":str(int(avl_quant)-quantity)}})
+    else:
+        print("insufficient quantity")
+        break
+
     for i in new_col.find():
         print(i)
 
