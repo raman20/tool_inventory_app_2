@@ -12,7 +12,7 @@ import sqlite3
 def tool_transfer():
     con = sqlite3.connect('test.db')
     cur = con.cursor()
-    city = input('selec city to transfer-> bombay, pune:\n')
+    city = input('select city to transfer-> bombay, pune:\n')
     city = city.lower()
     tool_id = int(input('select tool id: '))
     quantity = int(input('enter quantity')) 
