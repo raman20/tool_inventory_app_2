@@ -33,3 +33,9 @@ def tool_transfer():
     con.close()
         
 tool_transfer()
+
+def create_new_dispatch():
+    pass
+
+def delete_dispatch():
+    pass
