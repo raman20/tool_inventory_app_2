@@ -6,7 +6,7 @@ Created on Thu Jun  4 20:55:04 2020
 @author: ramandwivedi
 """
 
-import sqlite3
+import sqlite34
 
 def tool_transfer():
     con = sqlite3.connect('test.db')
