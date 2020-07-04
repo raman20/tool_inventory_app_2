@@ -4,6 +4,13 @@ db = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = db["testdb"]
 main = mydb["main"]
 
+def get_all_tools():
+    for i in main.find():
+        print(i)
+
+def get_tool(id):
+    return main.find_one({"__id":str(id)})
+
 
 def transfer():
     city = input('select city:-> ')
