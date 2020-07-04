@@ -19,6 +19,8 @@ def tool_transfer():
     cur.execute('select * from main where id = ?',(tool_id,))
     tool_info = cur.fetchone()
     avl_quant = tool_info[-1]
+    if not avl_quant >= quantity:
+        return
     tool_name = tool_info[-3]
     sr = tool_info[-2]
     sr = sr.split('_')
