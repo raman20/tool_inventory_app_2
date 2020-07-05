@@ -8,7 +8,7 @@ def get_all_tools():
     for i in main.find():
         print(i)
 
-def get_tool(id):
+def get_tool_info(id):
     return main.find_one({"__id":str(id)})
 
 
