@@ -33,5 +33,3 @@ def transfer():
 
     for i in new_col.find():
         print(i)
-
-transfer()
