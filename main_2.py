@@ -9,42 +9,42 @@ projects = mydb["projects"]
 
 
 def get_tools():
-    for i in main.find():
-        print(i)
+    print("id   name   quant") 
+    for i in main.find(): 
+        print(str(i["_id"])+"   "+i["tool"]+"      "+str(i["quant"])) 
 
 def get_tool_info(id):
-    return main.find_one({"__id":str(id)})
+    return main.find_one({"__id":id})
 
 
 def create_new_project():
+
     project_id = projects.count()+1
     project_name = input("enter project name:-> ")
     city = input('select city:-> ')
+    print("select tools ->\n\n")
+    get_tools()
     tool_id = int(input('enter tool id:-> '))
     quantity = int(input('enter quantity:-> '))
     tool_info = main.find_one({"_id":str(tool_id)})
     avl_quant = int(tool_info["quant"])
-    tool_name = tool_info["tool"]
     sr_num = tool_info["sr_num"]
     sr_num = sr_num.split("_")
     sr_num = sr_num[0]+'_'+str((avl_quant-quantity)+1)
-    new_col = mydb[city]
     if quantity<=avl_quant:
-        id = new_col.count()+1
-        new_col.insert_one({"_id":str(id),'name':tool_name,'sr_num':sr_num,"quant":quantity})
-        main.update_one({"_id":str(tool_id)},{"$set":{"quant":str(avl_quant-quantity)}})
+        projects.insert_one({"_id":project_id,'proj_name':project_name,'city':city,"tools":{"tool_id":[sr_num,quantity]}})
+        main.update_one({"_id":str(tool_id)},{"$set":{"quant":(avl_quant-quantity),"loc."+city:[sr_num,quantity]}})
     else:
         print("insufficient quantity")
         return
 
-    for i in new_col.find():
-        print(i)
+    get_project_info(project_id)
 
 def get_projects():
     pass
 
 def get_project_info(id):
-    pass
+    print(projects.find_one({"_id":id}))
 
 def add_tool():
     pass
