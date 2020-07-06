@@ -7,6 +7,7 @@ mydb = db["testdb"]
 main = mydb["main"]
 projects = mydb["projects"]
 
+
 def get_tools():
     for i in main.find():
         print(i)
@@ -16,6 +17,8 @@ def get_tool_info(id):
 
 
 def create_new_project():
+    project_id = projects.count()+1
+    project_name = input("enter project name:-> ")
     city = input('select city:-> ')
     tool_id = int(input('enter tool id:-> '))
     quantity = int(input('enter quantity:-> '))
@@ -40,7 +43,7 @@ def create_new_project():
 def get_projects():
     pass
 
-def get_project_info():
+def get_project_info(id):
     pass
 
 def add_tool():
