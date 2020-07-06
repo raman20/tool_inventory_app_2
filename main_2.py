@@ -9,6 +9,7 @@ projects = mydb["projects"]
 
 
 def get_tools():
+    # return list(main.find())
     print("id   name   quant") 
     for i in main.find(): 
         print(str(i["_id"])+"   "+i["tool"]+"      "+str(i["quant"])) 
@@ -26,8 +27,8 @@ def create_new_project():
     get_tools()
     tool_id = int(input('enter tool id:-> '))
     quantity = int(input('enter quantity:-> '))
-    tool_info = main.find_one({"_id":str(tool_id)})
-    avl_quant = int(tool_info["quant"])
+    tool_info = get_tool_info(tool_id)
+    avl_quant = tool_info["quant"]
     sr_num = tool_info["sr_num"]
     sr_num = sr_num.split("_")
     sr_num = sr_num[0]+'_'+str((avl_quant-quantity)+1)
