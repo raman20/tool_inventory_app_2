@@ -1,10 +1,13 @@
+# mongoDB python client
 import pymongo
 
+# connecting to mongoDB
 db = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = db["testdb"]
 main = mydb["main"]
+projects = mydb["projects"]
 
-def get_all_tools():
+def get_tools():
     for i in main.find():
         print(i)
 
@@ -12,7 +15,7 @@ def get_tool_info(id):
     return main.find_one({"__id":str(id)})
 
 
-def transfer():
+def create_new_project():
     city = input('select city:-> ')
     tool_id = int(input('enter tool id:-> '))
     quantity = int(input('enter quantity:-> '))
@@ -33,3 +36,12 @@ def transfer():
 
     for i in new_col.find():
         print(i)
+
+def get_projects():
+    pass
+
+def get_project_info():
+    pass
+
+def add_tool():
+    pass
