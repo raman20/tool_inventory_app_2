@@ -52,4 +52,3 @@ def get_project_info(id):
 def add_tool():
     pass
 
-get_projects()
