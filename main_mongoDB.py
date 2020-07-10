@@ -61,6 +61,7 @@ def add_tool(project_id,sender=None):
                         'sender':tool_sender[i],
                         "recv":project_id
                         })
+                main.update_one({"_id":tool_id},{"$pull":{"pid":sender}})
             else:
                 for i in range(len(tool_quant)):
                     if quantity < tool_quant[i]:
@@ -206,16 +207,16 @@ def add_tool(project_id,sender=None):
                         "avl.sr":0
                     }
                 })
-        
-            if project_id not in main.find_one({"_id":tool_id})["pid"]:
+        else:
+            print('insufficient quantity')    
+
+    if project_id not in main.find_one({"_id":tool_id})["pid"]:
                         main.update_one({"_id":tool_id},
                         {
                             "$push":{
                                 "pid":project_id
                             }
                         })
-        else:
-            print('insufficient quantity')    
 
 def create_new_project():
     #project details
