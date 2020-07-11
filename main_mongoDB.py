@@ -27,7 +27,7 @@ def add_tool(project_id,sender=None):
     quantity = int(input("Quantity:-> "))
     if sender:
         project_info = get_project_info(sender)
-        tool_info = project_info.find_one({"_id":sender})["avl"][str(tool_id)]
+        tool_info = project_info["avl"][str(tool_id)]
         tool_quant = tool_info["quant"]
         tool_sr = tool_info["sr"]
         tool_from = tool_info['from']
@@ -90,8 +90,7 @@ def add_tool(project_id,sender=None):
                             "$set":{
                                 f"avl.{tool_id}.quant.{i}":tool_quant[i]-quantity,
                                 f'avl.{tool_id}.sr.{i}':tool_sr[i].split("_")[0]+"_"+str(int(tool_sr[i].split("_")[1])+quantity),
-                                f"avl.{tool_id}.from.{i}":f"{day}/{month}/{year}",
-                                f"avl.{tool_id}.sender.{i}":'pre_exist'
+                                f"avl.{tool_id}.from.{i}":f"{day}/{month}/{year}"
                             }
                         })
                     else:
@@ -220,11 +219,10 @@ def add_tool(project_id,sender=None):
 
 def create_new_project():
     #project details
-    project_id = projects.count()+1
     project_name = input("enter project name:-> ")
     city = input('select city:-> ')
     projects.insert_one({
-            "_id":project_id,
+            "_id":projects.count()+1,
             'proj_name':project_name,
             'city':city,
             "status":"active"})    
@@ -239,6 +237,25 @@ def get_project_info(project_id):
 def delete_project(project_id):
     pass
 
+def get_history():
+    return history.find()
+
+def get_tool_history(tool_id):
+    return history.find({"tool_id":tool_id})
+
+def get_project_history(pid):
+    return history.find({"pid":pid})
+
+def get_tool_presence(tool_id):
+    l=[]
+    p = get_tool_info(tool_id)["pid"]
+    if p:
+        for i in p:
+            l.append(get_project_info(i)["avl"][str(tool_id)])
+        return l
+    else:
+        return "nowhere"
 
 if __name__ == "__main__":
+    add_tool(2,1)
     db.close()
