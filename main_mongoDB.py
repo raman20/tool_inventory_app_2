@@ -22,9 +22,7 @@ def get_tool_info(tool_id):
     return main.find_one({"_id":tool_id})
 
 
-def add_tool(project_id,sender=None):
-    tool_id = int(input("tool id:-> "))
-    quantity = int(input("Quantity:-> "))
+def add_tool(tool_id,quantity,project_id,sender=None):
     if sender:
         project_info = get_project_info(sender)
         tool_info = project_info["avl"][str(tool_id)]
@@ -256,6 +254,17 @@ def get_tool_presence(tool_id):
     else:
         return "nowhere"
 
+def create_dispatch(tools,quantity,sr,sender,recv,):
+    for i,j,k in zip(tools,quantity,sr):
+        dispatch.insert_one({
+            "_id":dispatch.count()+1,
+            "tool_id":i,
+            "sr":k,
+            "quantity":j,
+            "sender":sender,
+            "recv":recv,
+            "date":f"{day}/{month}/{year}"
+        })
+
 if __name__ == "__main__":
-    add_tool(2,1)
     db.close()
