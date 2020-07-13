@@ -266,5 +266,18 @@ def create_dispatch(tools,quantity,sr,sender,recv,):
             "date":f"{day}/{month}/{year}"
         })
 
+def add_new_tool():
+    pass
+
+def complete_project(pid):
+    project = get_project_info(pid)
+    tool_id = project["avl"].keys()
+    quant = list()
+    for i in tool_id:
+        quant.append(sum(project["avl"][i]["quant"]))
+    for i,j in zip(tool_id,quant):
+        add_tool(int(i),j,pid)
+
+
 if __name__ == "__main__":
     db.close()
