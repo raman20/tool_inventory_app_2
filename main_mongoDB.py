@@ -214,6 +214,7 @@ def add_tool(tool_id,quantity,project_id,sender=None):
                                 "pid":project_id
                             }
                         })
+    organize_main()
 
 def create_new_project():
     #project details
@@ -278,6 +279,32 @@ def complete_project(pid):
     for i,j in zip(tool_id,quant):
         add_tool(int(i),j,pid)
 
+def organize_main():
+    for i in get_tools():
+        quant = i["avl"]["quant"]
+        sr = i["avl"]["sr"]
+        name=i["tool"]
+        d = dict()
+        for i in sr:
+            d[i] = quant[i]
+        d = dict(sorted(d.items(),key=lambda item: item[0][item[0].index("_")+1]))
+        sr = d.keys()
+        quant =  d.values()
+        for i in sr[:-1]:
+            if i in sr:
+                for j in sr[sr.index(i)+1:]:
+                    if name+"_"+str(int(i[i.index("_")+1])+quant[sr.index(i)]) == j:
+                        quant[sr.index(i)]+=quant[sr.index(j)]
+                        quant.pop(sr.index(j))
+                        sr.pop(sr.index(j))
+        main.update_one({"_id":i["_id"]},
+        {
+            "$set":{
+                "avl.quant":quant,
+                "avl.sr":sr
+            }
+        })
 
 if __name__ == "__main__":
+    create_new_project()
     db.close()
