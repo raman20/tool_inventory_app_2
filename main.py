@@ -305,6 +305,5 @@ def organize_main():
             }
         })
 
-if __name__ == "__main__":
-    create_new_project()
-    db.close()
+def register_company():
+    pass
