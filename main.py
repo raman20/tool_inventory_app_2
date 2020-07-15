@@ -305,5 +305,12 @@ def organize_main():
             }
         })
 
-def register_company():
+def create_user(username,password):
+    error=None
+    return error
+
+def register_company(name):
+    pass
+
+def create_main_list():
     pass
