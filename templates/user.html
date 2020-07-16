@@ -6,11 +6,34 @@
     <body>
         <h1>{{name}}</h1>
         <h3>@{{username}}</h3>
+        {% if admin == 1 %}
+        <h4>super user</h4>
+        {% endif %}
         <br>
         {% if database %}
-        <p>Database exist</p>
-        {% else %}
+        <h3><b>ADD A NEW TOOL</b></h3>
+        <form action="{{url_for('new_tool')}}" method="post" id='add_new_tool'>
+            <label for="tool_name">NAME</label>
+            <input type="text" name="tool_name" id="tool_name" required>
+            <label for="tool_quant">QUANTITY</label>
+            <input type="number" name="tool_quant" id="tool_quant" required>
+            <label for="tool_sr">SERIAL NUMBER</label>
+            <input type="text" name="tool_sr" id="tool_sr" required>
+            <input type="submit" value="ADD">
+        </form>
+        <br>
+        <h3>PROJECTS</h3>
+            {% if project %}
+                {% for i in project %}
+                {% endfor %}
+            {% else %}
+                <p>NO PROJECTS</p>
+            {% endif %}
+        <!--
+        {% else %}    
         <p>Database don't exist</p>
+        -->
+
         {% endif %}
        <br>
        <a href="{{url_for('logout')}}">LOGOUT</a> 

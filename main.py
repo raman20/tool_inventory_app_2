@@ -273,8 +273,6 @@ def create_dispatch(tools,quantity,sr,sender,recv,):
             "date":f"{day}/{month}/{year}"
         })
 
-def add_new_tool():
-    pass
 
 def complete_project(pid):
     project = get_project_info(pid)
@@ -337,5 +335,7 @@ def check_login(username):
 def get_user(username):
     return connect_db("userdb")["user"].find_one({"username":username})
 
-def create_main_list():
-    pass
+def add_new_tool(db_name,tool_name,tool_quant,tool_sr):
+    db = connect_db(db_name)
+    main = db["main"]
+    main.insert_one({"_id":main.count()+1,"tool":tool_name,"sr_num":tool_sr,"total_quant":tool_quant,"avl.quant":[tool_quant],"avl.sr":[tool_sr],"pid":[]})

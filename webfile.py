@@ -1,6 +1,6 @@
 from flask import Flask,redirect,request,render_template,session,url_for,flash,g
 from werkzeug.security import check_password_hash,generate_password_hash
-from main import create_user,check_login,get_user
+from main import create_user,check_login,get_user,add_new_tool
 
 app = Flask(__name__)
 app.secret_key=b"!@#$!@#$!@#$1234"
@@ -41,7 +41,7 @@ def login():
 def user(username):
     user=get_user(username)
     if session.get("user",None) == username:
-        return render_template("user.html",name=user["name"],username=user["username"],database=user["database"])
+        return render_template("user.html",name=user["name"],username=user["username"],database=user["database"],admin=user["admin"])
     else:
         return redirect(url_for("login"))
 
@@ -49,5 +49,14 @@ def user(username):
 def logout():
     session.pop("user",None)
     return redirect(url_for("home"))
+
+@app.route("/add_new_tools",methods=["POST"])
+def new_tool():
+    if request.method == "POST":
+        tool_name=request.form["tool_name"]
+        tool_quant=request.form["tool_quant"]
+        tool_sr = request.form["tool_sr"]
+        db_name = get_user(session.get("user",None))["database"]
+        add_new_tool(db_name,tool_name,tool_quant,tool_sr)
 
 app.run(debug=True)
