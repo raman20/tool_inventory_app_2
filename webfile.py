@@ -1,8 +1,9 @@
 from flask import Flask,redirect,request,render_template,session,url_for,flash,g
 from werkzeug.security import check_password_hash,generate_password_hash
-from main import create_user
+from main import create_user,check_login,get_user
 
 app = Flask(__name__)
+app.secret_key=b"!@#$!@#$!@#$1234"
 
 @app.route("/")
 def home():
@@ -13,18 +14,40 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        error = create_user(username,generate_password_hash(password))
+        name = request.form['name']
+        error = create_user(name,username,generate_password_hash(password))
         if error is None:
             return redirect(url_for("login"))
-        flash(error)
-    return render_template("register.html")
+        else:
+            return render_template("register.html",error=error)
+    return render_template("register.html",error=None)
 
-@app.route("/login")
+@app.route("/login",methods=["GET","POST"])
 def login():
-    return '<h1>LOGIN</h1>'
+    if request.method=="POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        result = check_login(username)
+        if result:
+            if check_password_hash(result,password):
+                session['user'] = username
+                return redirect(url_for('user',username=username))
+        else:
+            error = 'username or password is wrong'
+            return render_template("login.html",error=error)
+    return render_template("login.html",error=None)
 
-@app.route("/logout")
+@app.route("/user/<username>",methods=["GET","POST"])
+def user(username):
+    user=get_user(username)
+    if session.get("user",None) == username:
+        return render_template("user.html",name=user["name"],username=user["username"],database=user["database"])
+    else:
+        return redirect(url_for("login"))
+
+@app.route("/logout",methods=["GET","POST"])
 def logout():
-    pass
+    session.pop("user",None)
+    return redirect(url_for("home"))
 
 app.run(debug=True)

@@ -3,6 +3,12 @@ import pymongo
 import datetime
 
 # connecting to mongoDB
+def connect_db(db_name):
+    db = pymongo.MongoClient("mongodb://localhost:27017/")
+    mydb = db[db_name]
+    db.close()
+    return mydb
+
 db = pymongo.MongoClient("mongodb://localhost:27017/")
 mydb = db["testdb"]
 main = mydb["main"]
@@ -305,12 +311,31 @@ def organize_main():
             }
         })
 
-def create_user(username,password):
-    error=None
-    return error
+def create_user(name,username,password):
+    db=connect_db("userdb")
+    user = db['user']
+    if not user.find_one({"username":username}):
+        user.insert_one({
+            "_id":user.count()+1,
+            "name":name,
+            "username":username,
+            "password":password,
+            "admin":1,
+            "database":""
+            })
+    else:
+        return 'username exist try again'
 
-def register_company(name):
-    pass
+def check_login(username):
+    db=connect_db("userdb")
+    user = db["user"]
+    if not user.find_one({"username":username}):
+        return False
+    else:
+        return user.find_one({"username":username})["password"] 
+
+def get_user(username):
+    return connect_db("userdb")["user"].find_one({"username":username})
 
 def create_main_list():
     pass

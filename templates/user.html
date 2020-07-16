@@ -1,9 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>user {{name}}</title>
+        <title>USER: {{name}}</title>
     </head>
     <body>
-        
+        <h1>{{name}}</h1>
+        <h3>@{{username}}</h3>
+        <br>
+        {% if database %}
+        <p>Database exist</p>
+        {% else %}
+        <p>Database don't exist</p>
+        {% endif %}
+       <br>
+       <a href="{{url_for('logout')}}">LOGOUT</a> 
     </body>
 </html>
