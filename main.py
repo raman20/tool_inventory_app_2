@@ -282,6 +282,12 @@ def complete_project(pid):
         quant.append(sum(project["avl"][i]["quant"]))
     for i,j in zip(tool_id,quant):
         add_tool(int(i),j,pid)
+    project.update_one({"_id":pid},
+        {
+            "$set":{
+                "status":"inactive"
+            }
+        })
 
 def organize_main():
     for i in get_tools():

@@ -7,28 +7,40 @@
         <h1>{{name}}</h1>
         <h3>@{{username}}</h3>
         {% if admin == 1 %}
-        <h4>super user</h4>
+            <h4>super user</h4>
         {% endif %}
         <br>
         {% if database %}
-        <h3><b>ADD A NEW TOOL</b></h3>
-        <form action="{{url_for('new_tool')}}" method="post" id='add_new_tool'>
-            <label for="tool_name">NAME</label>
-            <input type="text" name="tool_name" id="tool_name" required>
-            <label for="tool_quant">QUANTITY</label>
-            <input type="number" name="tool_quant" id="tool_quant" required>
-            <label for="tool_sr">SERIAL NUMBER</label>
-            <input type="text" name="tool_sr" id="tool_sr" required>
-            <input type="submit" value="ADD">
-        </form>
-        <br>
-        <h3>PROJECTS</h3>
-            {% if project %}
-                {% for i in project %}
-                {% endfor %}
-            {% else %}
-                <p>NO PROJECTS</p>
-            {% endif %}
+            <h3>ADD A NEW TOOL</h3>
+            <form action="{{url_for('new_tool')}}" method="post" id='add_new_tool'>
+                <label for="tool_name">NAME</label>
+                <input type="text" name="tool_name" id="tool_name" required>
+                <label for="tool_quant">QUANTITY</label>
+                <input type="number" name="tool_quant" id="tool_quant" required>
+                <label for="tool_sr">SERIAL NUMBER</label>
+                <input type="text" name="tool_sr" id="tool_sr" required>
+                <input type="submit" value="ADD TOOL">
+            </form>
+            <br>
+            <a href="{{url_for('tools')}}"><h3>TOOLS</h3></a>
+            <br>
+            <h3>PROJECTS</h3>
+                {% if project %}
+                    {% for i in project %}
+                    {% endfor %}
+                {% else %}
+                    <p>NO PROJECTS</p>
+                {% endif %}
+            <br>    
+            <form action="{{url_for('create_project')}}" method="post">
+                <label for="p_name">PROJECT NAME</label>
+                <input type="text" name="p_name" id="p_name" required>
+                <label for="p_city">CITY</label>
+                <input type="text" name="p_city" id="p_city" required>
+                <input type="submit" value="CREATE PROJECT">
+            </form>
+            <br>
+            <a href="{{url_for('create_user')}}"><h3>CREATE USER</h3></a>
         <!--
         {% else %}    
         <p>Database don't exist</p>
