@@ -21,16 +21,18 @@ month = datetime.datetime.now().month
 year = datetime.datetime.now().year
 
 
-def get_tools():
+def get_tools(db_name):
+    main = connect_db(db_name)["main"]
     return main.find()
 
-def get_tool_info(tool_id):
+def get_tool_info(db_name,tool_id):
+    main = connect_db(db_name)["main"]
     return main.find_one({"_id":tool_id})
 
 
-def add_tool(tool_id,quantity,project_id,sender=None):
+def add_tool(db_name,tool_id,quantity,project_id,sender=None):
     if sender:
-        project_info = get_project_info(sender)
+        project_info = get_project_info(db_name,sender)
         tool_info = project_info["avl"][str(tool_id)]
         tool_quant = tool_info["quant"]
         tool_sr = tool_info["sr"]
@@ -142,7 +144,7 @@ def add_tool(tool_id,quantity,project_id,sender=None):
             print("insufficient quantity")    
 
     else:
-        tool_info = get_tool_info(tool_id)
+        tool_info = get_tool_info(db_name,tool_id)
         tool_quant = tool_info['avl']['quant']
         tool_sr = tool_info['avl']['sr']
         if quantity <= sum(tool_quant):
@@ -220,23 +222,23 @@ def add_tool(tool_id,quantity,project_id,sender=None):
                                 "pid":project_id
                             }
                         })
-    organize_main()
+    organize_main(db_name)
 
-def create_new_project():
+def create_new_project(db_name,project_name,city):
     #project details
-    project_name = input("enter project name:-> ")
-    city = input('select city:-> ')
+    projects = connect_db(db_name)["projects"]
     projects.insert_one({
             "_id":projects.count()+1,
             'proj_name':project_name,
             'city':city,
             "status":"active"})    
 
-def get_projects():
-    for i in projects.find():
-        print(i)
+def get_projects(db_name):
+    projects = connect_db(db_name)["projects"]
+    return projects.find()
 
-def get_project_info(project_id):
+def get_project_info(db_name,project_id):
+    projects = connect_db(db_name)["projects"]
     return projects.find_one({"_id":project_id})
 
 def delete_project(project_id):
@@ -251,12 +253,12 @@ def get_tool_history(tool_id):
 def get_project_history(pid):
     return history.find({"pid":pid})
 
-def get_tool_presence(tool_id):
+def get_tool_presence(db_name,tool_id):
     l=[]
-    p = get_tool_info(tool_id)["pid"]
+    p = get_tool_info(db_name,tool_id)["pid"]
     if p:
         for i in p:
-            l.append(get_project_info(i)["avl"][str(tool_id)])
+            l.append(get_project_info(db_name,i)["avl"][str(tool_id)])
         return l
     else:
         return "nowhere"
@@ -274,23 +276,25 @@ def create_dispatch(tools,quantity,sr,sender,recv,):
         })
 
 
-def complete_project(pid):
-    project = get_project_info(pid)
+def complete_project(db_name,pid):
+    project = get_project_info(db_name,pid)
     tool_id = project["avl"].keys()
     quant = list()
     for i in tool_id:
         quant.append(sum(project["avl"][i]["quant"]))
     for i,j in zip(tool_id,quant):
-        add_tool(int(i),j,pid)
+        add_tool(db_name,int(i),j,pid)
     project.update_one({"_id":pid},
         {
             "$set":{
                 "status":"inactive"
             }
         })
+    main = connect_db(db_name)["main"]
+    main.update({},{"$pull":{"pid":pid}})
 
-def organize_main():
-    for i in get_tools():
+def organize_main(db_name):
+    for i in get_tools(db_name):
         quant = i["avl"]["quant"]
         sr = i["avl"]["sr"]
         name=i["tool"]
@@ -344,4 +348,5 @@ def get_user(username):
 def add_new_tool(db_name,tool_name,tool_quant,tool_sr):
     db = connect_db(db_name)
     main = db["main"]
-    main.insert_one({"_id":main.count()+1,"tool":tool_name,"sr_num":tool_sr,"total_quant":tool_quant,"avl.quant":[tool_quant],"avl.sr":[tool_sr],"pid":[]})
+    main.insert_one({"_id":main.count()+1,"tool":tool_name,"sr_num":tool_sr,"total_quant":tool_quant})
+    main.update_one({"sr_num":tool_sr},{"$set":{"avl.quant":[tool_quant],"avl.sr":[tool_sr],"pid":[]}})

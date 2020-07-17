@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TOOLS</title>
+    </head>
+    <body>
+        {% if tool_id %}
+            <h2>{{tool_id}}: {{tool_name}}</h2><br>
+            <h2>TOTAL QUANTITY: {{total_quant}}</h2><br>
+            <h2>SERIAL NUM {{tool_sr}}</h2><br><br>
+            <h2>DETAILS</h2>
+            {% if avl %}
+                <ol>
+                    <h3>SR   QUANTITY</h3>
+                {% for i in avl %}
+                    <li>{{i[0]}}  {{i[1]}}</li>
+                {% endfor %}
+                </ol>
+            {% endif %}
+            <h2>PROJECTS</h2><br>
+            {% if project %}
+                <ol>
+                {% for i in project %}
+                    <li><a href="{{url_for('projects',pid=i[0])}}">{{i[0]}} {{i[1]}}</a></li>
+                {% endfor %}
+                </ol>
+            {% else %}
+                <h2>NOT IN ANY PROJECTS</h2>
+            {% endif %}
+        {% else %}
+                {% if tool %}
+                    <ul>
+                    {% for i in tool %}
+                            <li><a href="{{url_for('tools',tid=i[0])}}">{{i[0]}}</a>  {{i[1]}}  {{i[2]}}</li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                <h2>NO TOOLS AVAILABLE</h2>    
+                {% endif %}   
+        {% endif %}
+    </body>
+</html>

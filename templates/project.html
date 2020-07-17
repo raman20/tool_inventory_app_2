@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>PROJECT: {{pid}}</title>
+    </head>
+    <body>
+        <h1>{{pid}} {{name}}</h1>
+        <br>
+        <h3>city:-> {{city}}</h3>
+        <br>
+        <h3>STATUS {{status}}</h3>
+        <br><br>
+        {% if tools %}
+            <h3>AVAILABLE TOOLS</h3><br>
+            <h4>ID  NAME  QUANT  SR_NUM  DATE  SENDER</h4>
+            {% for i in tools %}
+                <ol>
+                    <li><a href="{{url_for('tools',tid=i[0])}}">{{i[0]}}</a>  {{i[1]}}  {{i[2]}}  {{i[3]}}  {{i[4]}}   <a href="{{url_for('projects',pid=i[5])}}">{{i[5]}}</a></li>
+                </ol>
+            {% endfor %}
+        {% else %}
+            <h3>NO TOOLS</h3>
+        {% endif %}
+        {% if admin %}
+            <a href="{{url_for('add_tool',recv=pid)}}">ADD NEW TOOLS</a>
+            <br>
+            <a href="{{url_for('delete_project,pid=pid')}}">DELETE PROJECT</a>
+        {% endif %}    
+    </body>
+</html>
